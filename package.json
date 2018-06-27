@@ -1,0 +1,199 @@
+{
+    "name": "vscode-php-tdd",
+    "displayName": "PHP TDD",
+    "description": "Visual Studio Code extension to assist with PHP unit test integration",
+    "version": "0.0.1",
+    "publisher": "Jason Terando",
+    "engines": {
+        "vscode": "^1.23.0"
+    },
+    "categories": [
+        "Other"
+    ],
+    "activationEvents": [
+        "onLanguage:php",
+        "onCommand:phptdd.runUnitTest",
+        "onCommand:phptdd.runAllUnitTests",
+        "onCommand:phptdd.runAllWithCoverageUnitTests",
+        "onCommand:phptdd.initializeUnitTestProject",
+        "onCommand:phptdd.editUnitTest",
+        "onCommand:phptdd.clearProblems"
+    ],
+    "main": "./out/extension",
+    "contributes": {
+        "keybindings": [
+            {
+                "command": "phptdd.runUnitTest",
+                "key": "ctrl+alt+t"
+            }
+        ],
+        "commands": [
+            {
+                "command": "phptdd.initializeUnitTestProject",
+                "title": "PHP TDD: Initialize PHP Unit Test Project"
+            },
+            {
+                "command": "phptdd.editUnitTest",
+                "title": "PHP TDD: Edit PHP Unit Test"
+            },
+            {
+                "command": "phptdd.editLastUnitTest",
+                "title": "PHP TDD: Edit Last PHP Unit Test"
+            },
+            {
+                "command": "phptdd.runUnitTest",
+                "title": "PHP TDD: Run PHP Unit Test"
+            },
+            {
+                "command": "phptdd.runLastUnitTest",
+                "title": "PHP TDD: Re-run Last PHP Unit Test"
+            },
+            {
+                "command": "phptdd.runAllUnitTests",
+                "title": "PHP TDD: Run PHP All Unit Tests"
+            },
+            {
+                "command": "phptdd.runAllWithCoverageUnitTests",
+                "title": "PHP TDD: Run PHP All Unit Tests With Coverage"
+            },
+            {
+                "command": "phptdd.clearProblems",
+                "title": "PHP TDD: Clear All Unit Test Warnings & Errors"
+            }
+        ],
+        "configuration": {
+            "type": "object",
+            "title": "PHP TDD configuration",
+            "properties": {
+                "php-tdd.testSubdirectory": {
+                    "type": "string",
+                    "default": "tests/unit",
+                    "description": "Relative directory within workspace to store unit tests"
+                },
+                "php-tdd.testClassTemplateFile": {
+                    "type": "string",
+                    "default": "templates/PHPUnitTestCase.php",
+                    "description": "If set, file (relative path in the workspace) to use as the test class template"
+                },
+                "php-tdd.enableAutoRun": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "If true, unit tests are run automatically as text is edited"
+                },
+                "php-tdd.commands.directory": {
+                    "type": "string",
+                    "default": "__WORKSPACE_DIRECTORY__",
+                    "description": "The directory unit test commands are run from"
+                },
+                "php-tdd.commands.runUnitTest": {
+                    "type": "string",
+                    "default": "./vendor/bin/phpunit --testdox -c __TEST_SUBDIRECTORY__/phpunit.xml --filter __FUNCTION__ __TEST_SUBDIRECTORY__",
+                    "description": "The command to launch PHPUnit and run an individual unit test"
+                },
+                "php-tdd.commands.runAllUnitTests": {
+                    "type": "string",
+                    "default": "./vendor/bin/phpunit --testdox -c __TEST_SUBDIRECTORY__/phpunit.xml __TEST_SUBDIRECTORY__",
+                    "description": "The command to launch PHPUnit to run all unit tests"
+                },
+                "php-tdd.commands.runCodeCoverage": {
+                    "type": "string",
+                    "default": "./vendor/bin/phpunit --testdox -c __TEST_SUBDIRECTORY__/phpunit.coverage.xml __TEST_SUBDIRECTORY__",
+                    "description": "The command to launch PHPUnit to run all unit tests and generate code coverage"
+                },
+                "php-tdd.commands.codeCoverageReport": {
+                    "type": "string",
+                    "default": "./__TEST_SUBDIRECTORY__/coverage/index.html",
+                    "description": "If set, this file will be displayed after running the code coverage command"
+                },
+                "php-tdd.composer.enableInstall": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "If true, for a new project, Composer and PHPUnit will be added to composer.json"
+                },
+                "php-tdd.composer.enableNamespace": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "If true, when a unit test is added to a class, its namespace will be added to composer.json"
+                },
+                "php-tdd.composer.packagesRequired": {
+                    "type": "array",
+                    "default": [
+                        "composer/composer"
+                    ],
+                    "description": "If composer.install is true, the composer packages installed during project setup"
+                },
+                "php-tdd.composer.packagesDevelopment": {
+                    "type": "array",
+                    "default": [
+                        "phpunit/phpunit:^7.1.5"
+                    ],
+                    "description": "If composer.install is true, the composer packages installed during project setup"
+                },
+                "php-tdd.composer.commands.directory": {
+                    "type": "string",
+                    "default": "__WORKSPACE_DIRECTORY__",
+                    "description": "The directory composer commands are run from"
+                },
+                "php-tdd.composer.commands.require": {
+                    "type": "string",
+                    "default": "composer require __FLAGS__ __PACKAGE__",
+                    "description": "The command used to execute a composer require"
+                },
+                "php-tdd.composer.commands.update": {
+                    "type": "string",
+                    "default": "composer update",
+                    "description": "The command used to execute a composer update"
+                },
+                "php-tdd.composer.commands.dumpAutoload": {
+                    "type": "string",
+                    "default": "composer dump-autoload",
+                    "description": "The command used to execute a composer dump-autoload"
+                }
+            }
+        }
+    },
+    "nyc": {
+        "extension": [
+            ".ts",
+            ".tsx"
+        ],
+        "reporter": [
+            "html"
+        ],
+        "include": [
+            "src/**/*.ts"
+        ],
+        "exclude": [
+            "src/extension.ts",
+            "src/test",
+            "out/test"
+        ],
+        "all": true,
+        "produce-source-map": true
+    },
+    "devDependencies": {
+        "@types/mocha": "^5.2.0",
+        "@types/node": "^7.0.65",
+        "@types/sinon": "^5.0.1",
+        "istanbul": "^0.4.5",
+        "mocha": "^5.2.0",
+        "nyc": "^12.0.1",
+        "sinon": "^5.0.10",
+        "source-map-support": "^0.5.6",
+        "tslint": "^5.10.0",
+        "ts-node": "^6.0.5",
+        "typescript": "^2.9.1",
+        "tsconfig-paths": "^3.3.2",
+        "vscode": "^1.1.18",
+        "vscode-uri": "^1.0.3"
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./ && cp src/dump.php out/dump.php && cp -r src/templates out && cp src/test/sample.php out/test/sample.php",
+        "watch": "tsc -watch -p ./",
+        "postinstall": "node ./node_modules/vscode/bin/install",
+        "test": "npm run compile && node ./node_modules/vscode/bin/test",
+        "unit-test": "mocha --require ts-node/register -u tdd --colors src/test/src/**/*.test.ts",
+        "coverage": "nyc mocha --require ts-node/register -u tdd --colors src/test/src/**/*.test.ts"
+    }
+}

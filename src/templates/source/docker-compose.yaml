@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  phpunit-coverage:
+    build: 
+      context: .
+      dockerfile: ./dockerfile.phpunit-coverage
+    image: phptdd-phpunit-coverage
+    volumes:
+      - ../../:/app
+  phpunit:
+    build: 
+      context: .
+      dockerfile: ./dockerfile.phpunit
+    image: phptdd-phpunit
+    volumes:
+      - ../../:/app
+  composer:
+    image: composer:latest
+    volumes:
+      - ../../:/app
