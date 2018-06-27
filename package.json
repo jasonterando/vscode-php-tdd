@@ -15,7 +15,7 @@
     "categories": [
         "Other"
     ],
-    "icon": "./php-tdd.png",
+    "icon": "php-tdd.png",
     "activationEvents": [
         "onLanguage:php",
         "onCommand:phptdd.runUnitTest",
