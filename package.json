@@ -4,6 +4,7 @@
     "description": "Visual Studio Code extension to assist with PHP unit test integration",
     "version": "0.0.1",
     "publisher": "Jason Terando",
+    "homepage": "https://github.com/jasonterando/vscode-php-tdd",
     "engines": {
         "vscode": "^1.23.0"
     },
