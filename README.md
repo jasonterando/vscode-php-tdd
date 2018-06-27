@@ -125,4 +125,4 @@ See (./CHANGELOG.md)[CHANGELOG.md] for release information.
 
 ## Development
 
-Unit tests can be run by executing ```npm run unit-test``` or by loading the project in Visual Code and launch the "Unit Tests" tasks.  Note that unit tests are run without launcing Visual Code.  If you want to run the tests with Visual Code running, launch the "Integratoin Tests" task.
+Unit tests can be run by executing ```npm run unit-test``` or by loading the project in Visual Code and launch the "Unit Tests" tasks.  Note that unit tests are run without launcing Visual Code.  If you want to run the tests with Visual Code running, launch the "Integration Tests" task.
