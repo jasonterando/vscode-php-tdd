@@ -28,7 +28,7 @@ suite('ComposerSetupService', () => {
                 .calledWith('composer.json');
             sandbox.stub(fs, 'readFile')
                 .yields(undefined, JSON.stringify(test))
-                .calledWith('composer.json');
+                .calledWith('composer.json', sinon.match.func);
             const svc = new ComposerSetupService(ui, () => { return new SpawnService(ui); });
             const result = await svc.loadComposerJson('composer.json');
             assert.deepEqual(result, test);
@@ -41,7 +41,7 @@ suite('ComposerSetupService', () => {
                 .calledWith('composer.json');
             sandbox.stub(fs, 'readFile')
                 .yields(err)
-                .calledWith('composer.json');
+                .calledWith('composer.json', sinon.match.func);
             const svc = new ComposerSetupService(ui, () => { return new SpawnService(ui); });
             svc.loadComposerJson('composer.json').then(() => {
                 sinon.assert.fail('Should have failed with Bad File');
@@ -58,7 +58,7 @@ suite('ComposerSetupService', () => {
                 .calledWith('composer.json');
             sandbox.stub(fs, 'readFile')
                 .yields(undefined, '{')
-                .calledWith('composer.json');
+                .calledWith('composer.json', sinon.match.func);
             const svc = new ComposerSetupService(ui, () => { return new SpawnService(ui); });
             svc.loadComposerJson('composer.json').then(() => {
                 sinon.assert.fail('Should have failed with Unexpected end of JSON input');
@@ -84,7 +84,7 @@ suite('ComposerSetupService', () => {
             const test = { "foo": { "bar": 1 } };
             sandbox.stub(fs, 'writeFile')
                 .yields()
-                .calledWith('composer.json', JSON.stringify(test, undefined, 4));
+                .calledWith('composer.json', JSON.stringify(test, undefined, 4), sinon.match.func);
             const svc = new ComposerSetupService(ui, () => { return new SpawnService(ui); });
             await svc.saveComposerJson('composer.json', test);
         });
@@ -94,7 +94,7 @@ suite('ComposerSetupService', () => {
             const err = new Error('Bad file');
             sandbox.stub(fs, 'writeFile')
                 .yields(err)
-                .calledWith('composer.json', JSON.stringify(test, undefined, 4));
+                .calledWith('composer.json', JSON.stringify(test, undefined, 4), sinon.match.func);
             const svc = new ComposerSetupService(ui, () => { return new SpawnService(ui); });
             svc.saveComposerJson('composer.json', test).then(() => {
                 sinon.assert.fail('Should have failed with Bad file');
@@ -136,7 +136,7 @@ suite('ComposerSetupService', () => {
             const spawnFactory = (ui: IVisualCodeShim, mirrorOutput?: boolean) => {
                 const spawn = new SpawnService(ui, mirrorOutput);
                 // Validate what we are running
-                sinon.stub(spawn, "run").callsFake(() => {
+                sinon.stub(spawn, "run").callsFake(async () => {
                     const cmd = spawn.command;
                     const args = spawn.arguments;
                     switch(spawnCtr++) {
@@ -153,6 +153,7 @@ suite('ComposerSetupService', () => {
                             sinon.assert.match(args, ['update']);
                             break;
                     }
+                    return 'foo';
                 });
                 return spawn;
             };

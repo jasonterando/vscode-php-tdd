@@ -5,7 +5,7 @@ import * as sinon from 'sinon';
 import { PHPFileParserService } from '../../../services/php-file-parser-service';
 import { PHPEntityInfo } from '../../../models/php-entity-info';
 import { SpawnService } from '../../../services/spawn-service';
-import { VisualCodeShimMock } from '../unit/vs-code-shim-mock';
+import { VisualCodeShimMock } from '../vs-code-shim-mock';
 import { dirname } from 'path';
 import { PHPUseInfo } from '../../../models/php-use-info';
 import { PHPClassInfo } from '../../../models/php-class-info';
@@ -25,7 +25,7 @@ suite("PHPFileParser", () => {
     });
 
     suite("tokenize", () => {
-        test("should return array of tokens", async () => {
+        test("should return array of tokens, not setting PHP extensions if enablePHPExtensions is false", async () => {
             const ui = new VisualCodeShimMock();
             const spawn = new SpawnService(ui);
             const parser = new PHPFileParserService(() => {
@@ -33,11 +33,95 @@ suite("PHPFileParser", () => {
             }, ui);
 
             sandbox.spy(spawn.setCommand).calledWith('php');
-            sandbox.spy(spawn.setArguments).calledWith('-n', dirname('../../../dump.php'));
+            sandbox.spy(spawn.setArguments).calledWith(['-n', dirname('../../../dump.php')]);
             sandbox.spy(spawn.setWriteToStdin).calledWith(phpCode);
-            sandbox.stub(spawn, "run").returns(JSON.stringify(fakeTokens));
+            sandbox.stub(spawn, "run").resolves(JSON.stringify(fakeTokens));
             const result = await parser.tokenize(phpCode);
             assert.deepEqual(result, fakeTokens);
+        });
+        test("should return array of tokens, setting extensions on non-Windows as .so if enablePHPExtensions is true", async () => {
+            const ui = new VisualCodeShimMock();
+            (<any> ui).onWindows = false;
+            sandbox.stub(ui, "getEnablePHPExtensions").returns(true);
+            const spawn = new SpawnService(ui);
+            const parser = new PHPFileParserService(() => {
+                return spawn;
+            }, ui);
+
+            sandbox.spy(spawn.setCommand).calledWith('php');
+            sandbox.spy(spawn.setArguments).calledWith(['-n', 
+                '-d', 'extension=json.so', 
+                '-d', 'extension=tokenizer.so', 
+                dirname('../../../dump.php')]);
+            sandbox.spy(spawn.setWriteToStdin).calledWith(phpCode);
+            sandbox.stub(spawn, "run").resolves(JSON.stringify(fakeTokens));
+            const result = await parser.tokenize(phpCode);
+            assert.deepEqual(result, fakeTokens);
+        });
+        test("should return array of tokens, setting extensions on Windows as .dll if enablePHPExtensions is true", async () => {
+            const ui = new VisualCodeShimMock();
+            (<any> ui).onWindows = true;
+            sandbox.stub(ui, "getEnablePHPExtensions").returns(true);
+            const spawn = new SpawnService(ui);
+            const parser = new PHPFileParserService(() => {
+                return spawn;
+            }, ui);
+            sandbox.spy(spawn.setCommand).calledWith('php');
+            sandbox.spy(spawn.setArguments).calledWith(['-n', 
+                '-d', 'extension=json.dll', 
+                '-d', 'extension=tokenizer.dll', 
+                dirname('../../../dump.php')]);
+            sandbox.spy(spawn.setWriteToStdin).calledWith(phpCode);
+            sandbox.stub(spawn, "run").resolves(JSON.stringify(fakeTokens));
+            const result = await parser.tokenize(phpCode);
+            assert.deepEqual(result, fakeTokens);
+        });
+        test("should set enablePHPExtensions true if PHP can't call json_encode, and return normally", async () => {
+            const ui = new VisualCodeShimMock();
+            const stubGetEnablePHPExtensions = sandbox.stub(ui, "getEnablePHPExtensions");
+            stubGetEnablePHPExtensions.onFirstCall().returns(false);
+            stubGetEnablePHPExtensions.onSecondCall().returns(true);
+            const spawn = new SpawnService(ui);
+            const parser = new PHPFileParserService(() => {
+                return spawn;
+            }, ui);
+
+            sandbox.spy(spawn.setCommand).calledWith('php');
+            sandbox.spy(spawn.setArguments).calledWith(['-n', 
+                '-d', 'extension=json.so', 
+                '-d', 'extension=tokenizer.so', 
+                dirname('../../../dump.php')]);
+            sandbox.spy(spawn.setWriteToStdin).calledWith(phpCode);
+            
+            const stubRun = sandbox.stub(spawn, "run");
+            stubRun.onFirstCall().rejects(new Error('undefined function json_encode'));
+            stubRun.onSecondCall().resolves(JSON.stringify(fakeTokens));
+            const result = await parser.tokenize(phpCode);
+            assert.deepEqual(result, fakeTokens);
+            // Make sure setEnablePHPExtensions got called
+            sandbox.spy(ui, "setEnablePHPExtensions").calledOnceWith(true);
+        });
+        test("should throw an Error if PHP fails with unexpected fault", async () => {
+            const ui = new VisualCodeShimMock();
+            sandbox.stub(ui, "getEnablePHPExtensions").returns(true);
+            const spawn = new SpawnService(ui);
+            const parser = new PHPFileParserService(() => {
+                return spawn;
+            }, ui);
+
+            sandbox.spy(spawn.setCommand).calledWith('php');
+            sandbox.spy(spawn.setArguments).calledWith(['-n', 
+                '-d', 'extension=json.so', 
+                '-d', 'extension=tokenizer.so', 
+                dirname('../../../dump.php')]);
+            sandbox.spy(spawn.setWriteToStdin).calledWith(phpCode);
+            sandbox.stub(spawn, "run").rejects(new Error('Nee!'));
+            try {
+                await parser.tokenize(phpCode);
+                assert.fail('Call to PHP should have failed');
+            } catch(e) {
+                assert.equal(e.message, 'Nee!');
+            }
         });
     });
 
@@ -49,7 +133,7 @@ suite("PHPFileParser", () => {
                 return spawn;
             }, ui);
             sandbox.stub(parser, "tokenize")
-                .returns(fakeTokens)
+                .resolves(fakeTokens)
                 .withArgs([phpCode]);
             const result = await parser.getEntities(phpCode);
             assert.equal(result.length, 4);
@@ -75,10 +159,10 @@ suite("PHPFileParser", () => {
             }, ui);
             sandbox.stub(parser, "tokenize")
                 .withArgs(phpCode)
-                .returns('foo');
+                .resolves(fakeTokens);
             sandbox.stub(parser, "parse")
-                .withArgs('foo')
-                .returns(null);
+                .withArgs(fakeTokens)
+                .returns(undefined);
 
             parser.getEntities(phpCode).then(() => {
                 sinon.assert.fail('Should have failed with Unable to retrieve PHP entities');
@@ -98,7 +182,7 @@ suite("PHPFileParser", () => {
                 return spawn;
             }, ui);
             sandbox.stub(parser, "tokenize")
-                .returns(fakeTokens)
+                .resolves(fakeTokens)
                 .withArgs([phpCode]);
             const result = await parser.getTestableEntities(phpCode);
             assert.equal(result.length, 3);
@@ -117,7 +201,7 @@ suite("PHPFileParser", () => {
                 return spawn;
             }, ui);
             sandbox.stub(parser, "tokenize")
-                .returns(null)
+                .resolves([])
                 .withArgs([phpCode]);
             parser.getTestableEntities(phpCode).then(() => {
                 sinon.assert.fail('Should have failed with No PHP tokens found to parse');
@@ -137,7 +221,7 @@ suite("PHPFileParser", () => {
                 return spawn;
             }, ui);
             sandbox.stub(parser, "tokenize")
-                .returns(fakeTokens)
+                .resolves(fakeTokens)
                 .withArgs([phpCode]);
             const result = await parser.getEntityAtLineNumber(phpCode, 14);
             if(result instanceof PHPEntityInfo) {
@@ -156,7 +240,7 @@ suite("PHPFileParser", () => {
                 return spawn;
             }, ui);
             sandbox.stub(parser, "tokenize")
-                .returns(fakeTokens)
+                .resolves(fakeTokens)
                 .withArgs([phpCode]);
             const result = await parser.getEntityAtLineNumber(phpCode, 13);
             if(result instanceof PHPEntityInfo) {
@@ -175,7 +259,7 @@ suite("PHPFileParser", () => {
                 return spawn;
             }, ui);
             sandbox.stub(parser, "tokenize")
-                .returns(fakeTokens)
+                .resolves(fakeTokens)
                 .withArgs([phpCode]);
             const result = await parser.getEntityAtLineNumber(phpCode, 39);
             if(result instanceof PHPEntityInfo) {
@@ -194,7 +278,7 @@ suite("PHPFileParser", () => {
                 return spawn;
             }, ui);
             sandbox.stub(parser, "tokenize")
-                .returns(fakeTokens)
+                .resolves(fakeTokens)
                 .withArgs([phpCode]);
             const result = await parser.getEntityAtLineNumber(phpCode, 42);
             if(result instanceof PHPEntityInfo) {
@@ -213,11 +297,31 @@ suite("PHPFileParser", () => {
                 return spawn;
             }, ui);
             sandbox.stub(parser, "tokenize")
-                .returns([])
+                .resolves([])
                 .withArgs([phpCode]);
-            const result = await parser.getEntityAtLineNumber(phpCode, 14);
-            assert.equal(result, undefined); // should not hit
+            try {
+                await parser.getEntityAtLineNumber(phpCode, 14);
+                assert.fail("Should have failed with No PHP tokens found to parse");
+            } catch(e) {
+                assert.equal(e.message, "No PHP tokens found to parse");
+            }
         });
+
+        test("should return undefined if invalid line number specified", async () => {
+            const ui = new VisualCodeShimMock();
+            const spawn = new SpawnService(ui);
+            const parser = new PHPFileParserService(() => {
+                return spawn;
+            }, ui);
+            sandbox.stub(parser, "tokenize")
+                .resolves(fakeTokens)
+                .withArgs([phpCode]);
+            sandbox.stub(parser, "parse")
+                .resolves(undefined)
+                .withArgs([phpCode, 14]);
+            assert.equal(await parser.getEntityAtLineNumber(phpCode, 14), undefined);
+        });
+
     });
 
     suite("getNextDescriptorOnLine", () => {

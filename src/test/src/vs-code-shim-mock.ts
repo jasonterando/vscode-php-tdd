@@ -14,7 +14,7 @@ import { Configuration } from '../../models/configuration';
 export class VisualCodeShimMock implements IVisualCodeShim {
     public static readonly EOL = '\n';
     public static readonly PADDING = '    ';
-    
+    public readonly onWindows = false;
     public readonly configuration = new Configuration();
     private _eventEmitter = new EventEmitter();
     private _autoRunPolling = false;
@@ -44,43 +44,43 @@ export class VisualCodeShimMock implements IVisualCodeShim {
         return [];
     }
 
-    openDocument(path: string): Promise<IVisualCodeDocumentShim> {
+    openDocument(_path: string): Promise<IVisualCodeDocumentShim> {
         return new Promise((resolve) => {
-            return new VisualCodeDocumentShimMock();
+            resolve(new VisualCodeDocumentShimMock());
         });
     }
 
-    appendToOutputChannel(text: string): void {
+    appendToOutputChannel(_text: string): void {
     }
 
     showOutputChannel(): void {
     }
-    addDiagnostic(document: IVisualCodeDocumentShim, identifer: string, startLineNumber: number, startColumn: number,
-        endLineNumber: number, endColumn: number, message: string, severity?: number): void {
+    addDiagnostic(_document: IVisualCodeDocumentShim, _identifer: string, _startLineNumber: number, _startColumn: number,
+        _endLineNumber: number, _endColumn: number, _message: string, _severity?: number): void {
     }
 
-    clearDiagnostics(document: IVisualCodeDocumentShim, code: string): void {
+    clearDiagnostics(_document: IVisualCodeDocumentShim, _code: string): void {
     }
 
     clearAllDiagnostics(): void {
     }
 
-    showStatusBarMessage(message: string, tooltip?: string | undefined, command?: string | undefined): void {
+    showStatusBarMessage(_message: string, _tooltip?: string | undefined, _command?: string | undefined): void {
     }
 
     hideStatusBarMessage(): void {
     }
 
-    showInformationMessage(message: string): void {
+    showInformationMessage(_message: string): void {
     }
     
-    showWarningMessage(message: string): void {
+    showWarningMessage(_message: string): void {
     }
 
-    showErrorMessage(message: string): void {
+    showErrorMessage(_message: string): void {
     }
 
-    async showPickList(options: Array<IVisualCodeQuickPickItem>, allowMany: boolean = false): Promise<IVisualCodeQuickPickItem | undefined> {
+    async showPickList(options: Array<IVisualCodeQuickPickItem>, _allowMany: boolean = false): Promise<IVisualCodeQuickPickItem | undefined> {
         return new Promise<IVisualCodeQuickPickItem | undefined>((resolve) => {
             if(options && options.length > 0) {
                 resolve(options[0]);
@@ -90,4 +90,11 @@ export class VisualCodeShimMock implements IVisualCodeShim {
         });
     }
 
+    getEnablePHPExtensions(): boolean {
+        return false;
+    }
+
+    setEnablePHPExtensions(_value: boolean): Promise<void> {
+        return Promise.resolve();
+    }
 }

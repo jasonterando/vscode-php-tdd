@@ -7,7 +7,7 @@ import * as child_process from 'child_process';
 import * as process from 'process';
 
 import { SpawnService } from '../../../services/spawn-service';
-import { VisualCodeShimMock } from '../unit/vs-code-shim-mock';
+import { VisualCodeShimMock } from '../vs-code-shim-mock';
 import * as stream from 'stream';
 
 suite("SpawnService", () => {

@@ -26,4 +26,5 @@ export class Configuration {
             dumpAutoload: ''
         }
     };
+    public enablePHPExtensions = false;
 }

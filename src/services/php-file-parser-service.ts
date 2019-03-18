@@ -65,12 +65,29 @@ export class PHPFileParserService {
      * @param phpCode
      */
     async tokenize(phpCode: string): Promise<Array<any>> {
-        const results = await this._spawnServiceFactory(this._ui, false)
-            .setCommand('php')
-            .setArguments(["-n", path.join(path.dirname(__dirname), 'dump.php')])
-            .setWriteToStdin(phpCode)
-            .run();
-        return JSON.parse(results);
+        const forceJSON = this._ui.getEnablePHPExtensions();
+        try {
+            const args = ['-n'];
+            if(forceJSON) {
+                const ext = this._ui.onWindows ? "dll" : "so";
+                args.push('-d', `extension=json.${ext}`);
+                args.push('-d', `extension=tokenizer.${ext}`);
+            }
+            args.push(path.join(path.dirname(__dirname), 'dump.php'));
+            const results = await this._spawnServiceFactory(this._ui, false)
+                .setCommand('php')
+                .setArguments(args)
+                .setWriteToStdin(phpCode)
+                .run();
+            return JSON.parse(results);
+        } catch(e) {
+            if((e.message.indexOf('undefined function json_encode') !== -1) && (! forceJSON)) {
+                await this._ui.setEnablePHPExtensions(true);
+                return await this.tokenize(phpCode);
+            } else {
+                throw e;
+            }
+        }
     }
 
     /**
@@ -143,7 +160,7 @@ export class PHPFileParserService {
      */
     parse(parsedTokens: Array<any>, evalAtLineNumber: number = NaN): PHPEntityInfo | Array<PHPEntityInfo> | undefined {
         let activeTokens: Array<any>;
-        if(! parsedTokens) {
+        if(parsedTokens.length < 1) {
             throw new Error("No PHP tokens found to parse");
         }
 

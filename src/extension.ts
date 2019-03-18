@@ -17,11 +17,11 @@ export function activate(context: vscode.ExtensionContext) {
 
     context.subscriptions.push(ui);
 
-    ui.onPHPDocumentChanged.on('DOC-CHG', (e: vscode.TextDocumentChangeEvent) => {
+    ui.onPHPDocumentChanged.on('DOC-CHG', async (e: vscode.TextDocumentChangeEvent) => {
         if(e.contentChanges.length === 0) {
             return;
         }
-        workflow.onDocumentChanged(e);
+        await workflow.onDocumentChanged(e);
     });
 
     /**
@@ -29,7 +29,7 @@ export function activate(context: vscode.ExtensionContext) {
      */
     const cmdInitializeUnitTest = vscode.commands.registerCommand('phptdd.initializeUnitTestProject', async () => {
         try {
-            workflow.createUnitTestDirectory();
+            await workflow.createUnitTestDirectory();
         } catch(e) {
             vscode.window.showWarningMessage(e.toString());
         }
@@ -40,7 +40,7 @@ export function activate(context: vscode.ExtensionContext) {
         try {
             const editor = vscode.window.activeTextEditor;
             if(editor) {
-                workflow.editUnitTest(new VisualCodeDocumentShim(editor.document, editor));
+                await workflow.editUnitTest(new VisualCodeDocumentShim(editor.document, editor));
             }
         } catch(e) {
             vscode.window.showWarningMessage(e.toString());
@@ -52,7 +52,7 @@ export function activate(context: vscode.ExtensionContext) {
         try {
             const editor = vscode.window.activeTextEditor;
             if(editor) {
-                workflow.editLastUnitTest(new VisualCodeDocumentShim(editor.document, editor));
+                await workflow.editLastUnitTest(new VisualCodeDocumentShim(editor.document, editor));
             }
         } catch(e) {
             vscode.window.showWarningMessage(e.toString());
@@ -64,7 +64,7 @@ export function activate(context: vscode.ExtensionContext) {
         try {
             const editor = vscode.window.activeTextEditor;
             if(editor) {
-                workflow.runUnitTest(new VisualCodeDocumentShim(editor.document, editor));
+                await workflow.runUnitTest(new VisualCodeDocumentShim(editor.document, editor));
             }
         } catch(e) {
             vscode.window.showWarningMessage(e.toString());
@@ -75,7 +75,7 @@ export function activate(context: vscode.ExtensionContext) {
     const cmdRunAllUnitTests = vscode.commands.registerCommand('phptdd.runAllUnitTests', async () => {
         try {
             const workflow = WorkflowFactory(ui);
-            workflow.runAllUnitTests(false);
+            await workflow.runAllUnitTests(false);
         } catch(e) {
             vscode.window.showWarningMessage(e.toString());
         }
@@ -84,7 +84,7 @@ export function activate(context: vscode.ExtensionContext) {
     
     const cmdRunAllWithCoverageUnitTests = vscode.commands.registerCommand('phptdd.runAllWithCoverageUnitTests', async () => {
         try {
-            workflow.runAllUnitTests(true);
+            await workflow.runAllUnitTests(true);
         } catch(e) {
             vscode.window.showWarningMessage(e.toString());
         }

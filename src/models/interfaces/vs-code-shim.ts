@@ -15,6 +15,7 @@ export interface IVisualCodeShim {
     readonly onPHPDocumentChanged: EventEmitter;
     autoRunPolling: boolean;
     lastTestFunctionInfo: PHPTestFunctionInfo | undefined;
+    readonly onWindows: boolean;
 
     getWorkspaceFolderPaths(): Array<string>;
     openDocument(path: string): Promise<IVisualCodeDocumentShim>;
@@ -34,6 +35,9 @@ export interface IVisualCodeShim {
     showErrorMessage(message: string): void;
 
     showPickList(options: Array<IVisualCodeQuickPickItem>, allowMany?: boolean): Promise<IVisualCodeQuickPickItem | undefined>;
+
+    getEnablePHPExtensions(): boolean;
+    setEnablePHPExtensions(value: boolean): Promise<void>;
 }
 
 export interface IVisualCodeQuickPickItem {

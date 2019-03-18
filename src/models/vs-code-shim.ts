@@ -1,6 +1,7 @@
 'use strict';
 
 import * as vscode from 'vscode';
+import * as os from 'os';
 import { EventEmitter } from 'events';
 import { IVisualCodeShim, IVisualCodeQuickPickItem } from './interfaces/vs-code-shim';
 import { IVisualCodeDocumentShim } from './interfaces/vs-code-document-shim';
@@ -12,6 +13,7 @@ import { Configuration } from './configuration';
  * This class handles stateful functionality for VSCode workspaces
  */
 export class VisualCodeShim extends vscode.Disposable implements IVisualCodeShim {
+    public readonly onWindows = os.platform() === "win32";
     // Active configuration
     public readonly configuration: Configuration = new Configuration();
     // Status bar entry that will be used to display info
@@ -84,6 +86,7 @@ export class VisualCodeShim extends vscode.Disposable implements IVisualCodeShim
         this.configuration.composer.commands.require = config['composer']['commands']['require'];
         this.configuration.composer.commands.update = config['composer']['commands']['update'];
         this.configuration.composer.commands.dumpAutoload = config['composer']['commands']['dumpAutoload'];
+        this.configuration.enablePHPExtensions = config['enablePHPExtensions'];
     }
 
     /**
@@ -167,6 +170,21 @@ export class VisualCodeShim extends vscode.Disposable implements IVisualCodeShim
         if(this._output) {
             this._output.show();
         }
+    }
+
+    /**
+     * Get the current value for forcing PHP to enable JSON and tokenizer modules
+     */
+    getEnablePHPExtensions(): boolean {
+        return this.configuration.enablePHPExtensions;
+    }
+
+    /**
+     * Update the current value for forcing PHP to enable JSON and tokenizer modules
+     */
+    async setEnablePHPExtensions(value: boolean) {
+        const config = vscode.workspace.getConfiguration("php-tdd");
+        await config.update('enablePHPExtensions', value);
     }
 
     /**

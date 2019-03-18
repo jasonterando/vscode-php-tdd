@@ -2,7 +2,7 @@
     "name": "vscode-php-tdd",
     "displayName": "PHP TDD",
     "description": "Visual Studio Code extension to assist with PHP unit test integration",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "publisher": "jasonterando",
     "homepage": "https://github.com/jasonterando/vscode-php-tdd",
     "repository": {
@@ -85,6 +85,11 @@
                     "type": "boolean",
                     "default": false,
                     "description": "If true, unit tests are run automatically as text is edited"
+                },
+                "php-tdd.enablePHPExtensions": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "If true, required JSON and tokenizer PHP modules are explicitly enabled (required if PHP is compiled without them embedded)"
                 },
                 "php-tdd.commands.directory": {
                     "type": "string",
@@ -178,20 +183,20 @@
         "produce-source-map": true
     },
     "devDependencies": {
-        "@types/mocha": "^5.2.0",
-        "@types/node": "^7.0.65",
-        "@types/sinon": "^5.0.1",
+        "@types/mocha": "^5.2.6",
+        "@types/node": "^7.10.5",
+        "@types/sinon": "^7.0.10",
         "istanbul": "^0.4.5",
         "mocha": "^5.2.0",
-        "nyc": "^12.0.1",
-        "sinon": "^5.0.10",
-        "source-map-support": "^0.5.6",
-        "tslint": "^5.10.0",
+        "nyc": "^13.3.0",
+        "sinon": "^7.2.7",
+        "source-map-support": "^0.5.11",
         "ts-node": "^6.0.5",
+        "tsconfig-paths": "^3.8.0",
+        "tslint": "^5.14.0",
         "typescript": "^2.9.1",
-        "tsconfig-paths": "^3.3.2",
-        "vscode": "^1.1.18",
-        "vscode-uri": "^1.0.3"
+        "vscode": "^1.1.30",
+        "vscode-uri": "^1.0.6"
     },
     "scripts": {
         "vscode:prepublish": "npm run compile",
