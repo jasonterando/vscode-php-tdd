@@ -11,3 +11,5 @@
 - Added "await" keywork to async extension calls to workflow
 - Added BaseTestCase require statement to bootstrap.php
 - Removed duplicate vs-code-shim-mock file
+## 0.0.5
+- Align version number with previous release
