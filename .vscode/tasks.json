@@ -11,11 +11,6 @@
             "presentation": {
                 "reveal": "never"
             },
-            "options": {
-				"shell": {
-                    "executable": "powershell.exe"
-				}
-			},            
             "group": {
                 "kind": "build",
                 "isDefault": true

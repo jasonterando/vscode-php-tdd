@@ -183,20 +183,21 @@
         "produce-source-map": true
     },
     "devDependencies": {
-        "@types/mocha": "^5.2.6",
-        "@types/node": "^7.10.5",
-        "@types/sinon": "^7.0.10",
+        "@types/mocha": "^5.2.7",
+        "@types/node": "^7.10.11",
+        "@types/sinon": "^7.5.2",
+        "@types/vscode": "^1.14.0",
         "istanbul": "^0.4.5",
         "mocha": "^5.2.0",
         "nyc": "^13.3.0",
-        "sinon": "^7.2.7",
-        "source-map-support": "^0.5.11",
+        "sinon": "^7.5.0",
+        "source-map-support": "^0.5.19",
         "ts-node": "^6.0.5",
-        "tsconfig-paths": "^3.8.0",
-        "tslint": "^5.14.0",
+        "tsconfig-paths": "^3.9.0",
+        "tslint": "^5.20.1",
         "typescript": "^2.9.1",
-        "vscode": "^1.1.30",
-        "vscode-uri": "^1.0.6"
+        "vscode-test": "^1.4.0",
+        "vscode-uri": "^1.0.8"
     },
     "scripts": {
         "vscode:prepublish": "npm run compile",
