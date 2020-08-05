@@ -134,7 +134,7 @@ suite("PHPFileParser", () => {
             }, ui);
             sandbox.stub(parser, "tokenize")
                 .resolves(fakeTokens)
-                .withArgs([phpCode]);
+                .withArgs(phpCode);
             const result = await parser.getEntities(phpCode);
             assert.equal(result.length, 4);
             assert.equal(true, result[0] instanceof PHPUseInfo);
@@ -183,7 +183,7 @@ suite("PHPFileParser", () => {
             }, ui);
             sandbox.stub(parser, "tokenize")
                 .resolves(fakeTokens)
-                .withArgs([phpCode]);
+                .withArgs(phpCode);
             const result = await parser.getTestableEntities(phpCode);
             assert.equal(result.length, 3);
             assert.equal(result[0].fullName, "MyTestNamespace\\MyCommentedClass");
@@ -202,7 +202,7 @@ suite("PHPFileParser", () => {
             }, ui);
             sandbox.stub(parser, "tokenize")
                 .resolves([])
-                .withArgs([phpCode]);
+                .withArgs(phpCode);
             parser.getTestableEntities(phpCode).then(() => {
                 sinon.assert.fail('Should have failed with No PHP tokens found to parse');
                 done();
@@ -222,7 +222,7 @@ suite("PHPFileParser", () => {
             }, ui);
             sandbox.stub(parser, "tokenize")
                 .resolves(fakeTokens)
-                .withArgs([phpCode]);
+                .withArgs(phpCode);
             const result = await parser.getEntityAtLineNumber(phpCode, 14);
             if(result instanceof PHPEntityInfo) {
                 assert.equal(result.name, "TestMethod1", "TestMethod1 incorrect name");
@@ -241,7 +241,7 @@ suite("PHPFileParser", () => {
             }, ui);
             sandbox.stub(parser, "tokenize")
                 .resolves(fakeTokens)
-                .withArgs([phpCode]);
+                .withArgs(phpCode);
             const result = await parser.getEntityAtLineNumber(phpCode, 13);
             if(result instanceof PHPEntityInfo) {
                 assert.equal(result.name, "TestMethod1", "TestMethod1 incorrect name");
@@ -260,7 +260,7 @@ suite("PHPFileParser", () => {
             }, ui);
             sandbox.stub(parser, "tokenize")
                 .resolves(fakeTokens)
-                .withArgs([phpCode]);
+                .withArgs(phpCode);
             const result = await parser.getEntityAtLineNumber(phpCode, 39);
             if(result instanceof PHPEntityInfo) {
                 assert.equal(result.name, "MyUncommentedClass", "MyUncommentedClass incorrect name");
@@ -279,7 +279,7 @@ suite("PHPFileParser", () => {
             }, ui);
             sandbox.stub(parser, "tokenize")
                 .resolves(fakeTokens)
-                .withArgs([phpCode]);
+                .withArgs(phpCode);
             const result = await parser.getEntityAtLineNumber(phpCode, 42);
             if(result instanceof PHPEntityInfo) {
                 assert.equal(result.name, "standaloneTest", "standaloneTest incorrect name");
@@ -298,7 +298,7 @@ suite("PHPFileParser", () => {
             }, ui);
             sandbox.stub(parser, "tokenize")
                 .resolves([])
-                .withArgs([phpCode]);
+                .withArgs(phpCode);
             try {
                 await parser.getEntityAtLineNumber(phpCode, 14);
                 assert.fail("Should have failed with No PHP tokens found to parse");
@@ -315,7 +315,7 @@ suite("PHPFileParser", () => {
             }, ui);
             sandbox.stub(parser, "tokenize")
                 .resolves(fakeTokens)
-                .withArgs([phpCode]);
+                .withArgs(phpCode);
             sandbox.stub(parser, "parse")
                 .resolves(undefined)
                 .withArgs([phpCode, 14]);

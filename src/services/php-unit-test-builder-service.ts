@@ -79,16 +79,19 @@ export class PHPUnitTestBuilderService {
      * @returns object - filename and relativePath (relative path within workspace) 
      */
     protected getUnitTestFileNameInfo(documentPath: string) {
+        const sep = path.sep;
         let fileDirectory = path.dirname(documentPath);
+        if(! fileDirectory.endsWith(sep)) {
+            fileDirectory += sep;
+        }
         for(let workspaceFolderPath of this._ui.getWorkspaceFolderPaths()) {
             if(fileDirectory.indexOf(workspaceFolderPath) === 0) {
                 let segment = fileDirectory.substring(workspaceFolderPath.length);
-                let sep = path.sep;
                 let idx = segment.indexOf(sep, (segment[0] === sep) ? 1 : 0);
                 if(idx !== -1) {
-                    let testDirectory = path.join(workspaceFolderPath, this._unitTestPath, 'cases', segment);
+                    let testDirectory = path.join(workspaceFolderPath, this._unitTestPath, segment);
                     PHPUtility.mkdirDeep(testDirectory);
-                    
+
                     // Figure out the name of the test file
                     let testFile = path.join(testDirectory, path.basename(documentPath));
                     let ext = path.extname(testFile);

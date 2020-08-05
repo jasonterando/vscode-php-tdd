@@ -114,6 +114,18 @@ export class SpawnService {
                 cwd: this._startInDirectory
             };
             const child = child_process.spawn(path.normalize(this._command), this._arguments, options);
+            if( ! child.stdin) {
+                reject(`STDIN not available for spawned command ${this._command}`);
+                return;
+            }
+            if( ! child.stdout) {
+                reject(`STDOUT not available for spawned command ${this._command}`);
+                return;
+            }
+            if( ! child.stderr) {
+                reject(`STDERR not available for spawned command ${this._command}`);
+                return;
+            }
             child.stdout.on('data', (data) => {
                 output += data;
                 if(this._mirrorOutput) {

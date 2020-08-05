@@ -72,16 +72,16 @@ export class PHPUnitTestProjectService {
      * @return string 
      */
     async createUnitTestDirectory(unitTestDirectoryPath: string): Promise<void> {
-        if(fs.existsSync(unitTestDirectoryPath)) {
-            this._ui.appendToOutputChannel("*** Removing existing unit test project directory ***");
-            try {
-                await PHPUtility.rimraf(unitTestDirectoryPath);
-            } finally {
-                this._ui.hideStatusBarMessage();
-            }
-        }
+        // if(fs.existsSync(unitTestDirectoryPath)) {
+        //     this._ui.appendToOutputChannel("*** Removing existing unit test project directory ***");
+        //     try {
+        //         await PHPUtility.rimraf(unitTestDirectoryPath);
+        //     } finally {
+        //         this._ui.hideStatusBarMessage();
+        //     }
+        // }
 
-        PHPUtility.mkdirDeep(path.join(unitTestDirectoryPath, 'cases'));
+        PHPUtility.mkdirDeep(path.join(unitTestDirectoryPath));
 
         // Copy in source files, if configured
         if(this._sourceSubdirectory) {
@@ -97,13 +97,14 @@ export class PHPUnitTestProjectService {
                 let files = fs.readdirSync(sourceFolder);
                 for(let file of files) {
                     var source = path.join(sourceFolder, file);
-                    if(fs.statSync(source).isFile) {
+                    if(fs.statSync(source).isFile()) {
                         var dest = path.join(unitTestDirectoryPath, file);
                         copyPromises.push(new Promise(function(resolve, reject) {
-                            fs.createReadStream(source).pipe(fs.createWriteStream(dest))
-                                .on('finish', () => { resolve(); })
-                                .on('error', (err: any) => { reject(err); });
-
+                            if (! fs.existsSync(dest)) {
+                                fs.createReadStream(source).pipe(fs.createWriteStream(dest))
+                                    .on('finish', () => { resolve(); })
+                                    .on('error', (err: any) => { reject(err); });
+                            }
                         }));
                     }
                 }

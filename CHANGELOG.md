@@ -13,3 +13,7 @@
 - Removed duplicate vs-code-shim-mock file
 ## 0.0.5
 - Align version number with previous release
+## 0.0.6
+- Do not remove existing test directory and existing files in test directory when setting up first unit test
+- Update unit test and phpunit.xml templates to be phpunit 9 friendly
+- Replace "vscode" with "vscode-test"

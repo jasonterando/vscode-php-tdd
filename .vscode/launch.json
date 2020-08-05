@@ -34,6 +34,7 @@
             "outFiles": [
                 "${workspaceFolder}/out/test/**/*.js"
             ],
+            "sourceMaps": true,
             "preLaunchTask": "npm: watch"
         },
         {
@@ -47,6 +48,7 @@
             "outFiles": [
                 "${workspaceFolder}/out/**/*.js"
             ],
+            "sourceMaps": true,
             "preLaunchTask": "npm: watch"
         },
     ]

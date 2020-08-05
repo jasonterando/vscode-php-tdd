@@ -9,7 +9,7 @@ class __TestCaseClassName__ extends BaseTestCase {
      * This code will run before each test executes
      * @return void
      */
-    protected function setUp() {
+    protected function setUp(): void {
 
     }
 
@@ -17,7 +17,7 @@ class __TestCaseClassName__ extends BaseTestCase {
      * This code will run after each test executes
      * @return void
      */
-    protected function tearDown() {
+    protected function tearDown(): void {
 
     }
 }
