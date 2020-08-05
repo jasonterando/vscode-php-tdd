@@ -2,7 +2,7 @@
     "name": "vscode-php-tdd",
     "displayName": "PHP TDD",
     "description": "Visual Studio Code extension to assist with PHP unit test integration",
-    "version": "0.0.5",
+    "version": "0.0.6",
     "publisher": "jasonterando",
     "homepage": "https://github.com/jasonterando/vscode-php-tdd",
     "repository": {
