@@ -10,15 +10,7 @@ export enum PHPCommentType {
  */
 export class PHPCommentInfo {
 
-    readonly type: PHPCommentType;
-    readonly startLineNumber: number;
-    endLineNumber: number = NaN;
-
-    constructor(type: PHPCommentType, startLineNumber: number = NaN, endLineNumber: number = NaN) {
-        this.type = type;
-        this.startLineNumber = startLineNumber;
-        this.endLineNumber = endLineNumber;
-    }
+    constructor(public readonly type: PHPCommentType, public readonly startLineNumber: number = NaN, public endLineNumber: number = NaN) {}
     
     rangeToString(): string {
         let validStart = ! isNaN(this.startLineNumber);

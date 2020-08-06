@@ -37,13 +37,13 @@ export class PHPUnitTestBuilderService {
      * @param documentPath 
      * @param workspaceFolderPath
      */
-    async editUnitTestFunction(functionName: string, entity: PHPEntityInfo, documentPath: string, workspaceFolderPath: string) {
+    async editUnitTestFunction(functionName: string, useBaseTestCase: boolean, entity: PHPEntityInfo, documentPath: string, workspaceFolderPath: string) {
         let testFileInfo = this.getUnitTestFileNameInfo(documentPath);
         let contents: string;
         if(fs.existsSync(testFileInfo.filename)) {
             contents = fs.readFileSync(testFileInfo.filename).toString();
         } else {
-            contents = await this.createTestFile(testFileInfo.filename, documentPath, testFileInfo.relativePath);
+            contents = await this.createTestFile(testFileInfo.filename, useBaseTestCase, documentPath, testFileInfo.relativePath);
         }
 
         let entities = await this._parser.getEntities(contents);
@@ -110,10 +110,11 @@ export class PHPUnitTestBuilderService {
     /**
      * Create a unit test file
      * @param testFileName
+     * @param useBaseTest - if true, use PHPTDD's BaseTest class, otherwise, use PHPUnit TestCase
      * @param sourceFileName
      * @param relativeDirectory
      */
-    protected async createTestFile(testFileName: string, sourceFileName: string, relativeDirctory: string) {
+    protected async createTestFile(testFileName: string, useBaseTest: boolean, sourceFileName: string, relativeDirctory: string) {
         // Get the name of the template to use
         if(this._unitTestTemplateFile) {
             const templateFile = path.join(path.dirname(__dirname), this._unitTestTemplateFile);
@@ -142,12 +143,27 @@ export class PHPUnitTestBuilderService {
             if(namespace[0] !== '\\') {
                 namespace = '\\' + namespace;
             }
-
             namespace = this.validateNamespace(namespace);
+            if (namespace.endsWith('\\')) {
+                namespace = namespace.substr(0, namespace.length - 1);
+            }
+
+            let testUseClass: string;
+            let testClass: string;
+
+            if (useBaseTest) {
+                testUseClass = "PHPTDD\\BaseTestCase";
+                testClass = "BaseTestCase";
+            } else {
+                testUseClass = "PHPUnit\\Framework\\TestCase";
+                testClass = "TestCase";
+            }
 
             contents = contents
                 .replace("__TestNamespace__", namespace)
-                .replace("__TestCaseClassName__", testCaseClassName);
+                .replace("__TestCaseClassName__", testCaseClassName)
+                .replace("__TestUseClass__", testUseClass)
+                .replace("__TestClass__", testClass);
 
             fs.writeFileSync(testFileName, contents);
 

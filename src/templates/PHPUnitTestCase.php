@@ -1,9 +1,8 @@
 <?php
-namespace PHPTDD__RelativeNamespace__;
-use PHPTDD\BaseTestCase;
-use PHPUnit\Framework\TestCase;
+namespace PHPTDD__TestNamespace__;
+use __TestUseClass__;
 
-class __TestCaseClassName__ extends BaseTestCase {
+class __TestCaseClassName__ extends __TestClass__ {
 
     /**
      * This code will run before each test executes

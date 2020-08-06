@@ -48,7 +48,7 @@ export class PHPDocumentEditorService {
     }
 
     /**
-     * Add a test function comment to the given tntity
+     * Add a test function comment to the given entity
      * @param functionName 
      * @param entity 
      * @param document

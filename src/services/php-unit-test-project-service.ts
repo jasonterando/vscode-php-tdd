@@ -5,6 +5,7 @@ import * as path from 'path';
 import { IVisualCodeShim } from '../models/interfaces/vs-code-shim';
 import { PHPUtility } from '../services/php-utility';
 import { IVisualCodeDocumentShim } from '../models/interfaces/vs-code-document-shim';
+import { PHPUnitTestProjectInfo } from '../models/php-unit-test-project-info';
 
 export class PHPUnitTestProjectService {
     
@@ -80,63 +81,41 @@ export class PHPUnitTestProjectService {
         //         this._ui.hideStatusBarMessage();
         //     }
         // }
-
-        PHPUtility.mkdirDeep(path.join(unitTestDirectoryPath));
-
-        // Copy in source files, if configured
-        if(this._sourceSubdirectory) {
-            let sourceFolder = path.join(path.dirname(__dirname), this._sourceSubdirectory);
-            if(! fs.existsSync(sourceFolder)) {
-                throw new Error("Unable to set up test directory: " + sourceFolder + " does not exist");
-            }
-
-            // Copy all the files in the source directory to the new directory
-            this._ui.appendToOutputChannel("*** Copying unit test project files ****");
-            try {
-                let copyPromises = [];
-                let files = fs.readdirSync(sourceFolder);
-                for(let file of files) {
-                    var source = path.join(sourceFolder, file);
-                    if(fs.statSync(source).isFile()) {
-                        var dest = path.join(unitTestDirectoryPath, file);
-                        copyPromises.push(new Promise(function(resolve, reject) {
-                            if (! fs.existsSync(dest)) {
-                                fs.createReadStream(source).pipe(fs.createWriteStream(dest))
-                                    .on('finish', () => { resolve(); })
-                                    .on('error', (err: any) => { reject(err); });
-                            }
-                        }));
-                    }
+        const unitTestDirectoryExists = fs.existsSync(unitTestDirectoryPath);
+        if (! unitTestDirectoryExists) {
+            this._ui.appendToOutputChannel(`*** Creating unit test directory: ${unitTestDirectoryPath} ****`);
+            PHPUtility.mkdirDeep(path.join(unitTestDirectoryPath));
+            
+            // Copy in source files, if configured
+            if (this._sourceSubdirectory) {
+                let sourceFolder = path.join(path.dirname(__dirname), this._sourceSubdirectory);
+                if(! fs.existsSync(sourceFolder)) {
+                    throw new Error("Unable to set up test directory: " + sourceFolder + " does not exist");
                 }
-                await Promise.all(copyPromises).catch((err: any) => { throw new Error(err); });
-            } finally {
-                this._ui.hideStatusBarMessage();
+
+                // Copy all the files in the source directory to the new directory
+                this._ui.appendToOutputChannel("*** Copying unit test project files ****");
+                try {
+                    let copyPromises = [];
+                    let files = fs.readdirSync(sourceFolder);
+                    for(let file of files) {
+                        var source = path.join(sourceFolder, file);
+                        if(fs.statSync(source).isFile()) {
+                            var dest = path.join(unitTestDirectoryPath, file);
+                            copyPromises.push(new Promise(function(resolve, reject) {
+                                if (! fs.existsSync(dest)) {
+                                    fs.createReadStream(source).pipe(fs.createWriteStream(dest))
+                                        .on('finish', () => { resolve(); })
+                                        .on('error', (err: any) => { reject(err); });
+                                }
+                            }));
+                        }
+                    }
+                    await Promise.all(copyPromises).catch((err: any) => { throw new Error(err); });
+                } finally {
+                    this._ui.hideStatusBarMessage();
+                }
             }
         }
     }
 }
-
-export class PHPUnitTestProjectInfo {
-    private _unitTestPath: string;
-    private _unitTestPathExists: boolean;
-    private _workspacePath: string;
-
-    constructor(unitTestPath: string, workspacePath: string) {
-        this._unitTestPath = unitTestPath;
-        this._unitTestPathExists = fs.existsSync(unitTestPath);
-        this._workspacePath = workspacePath;
-    }
-
-    get unitTestPath(): string {
-        return this._unitTestPath;
-    }
-
-    get unitTestPathExists(): boolean {
-        return this._unitTestPathExists;
-    }
-
-    get workspacePath() : string {
-        return this._workspacePath;
-    }
-}
-

@@ -6,11 +6,13 @@ import { IVisualCodeShim } from './models/interfaces/vs-code-shim';
 import { PHPTestFunctionInfo } from './models/php-test-function-info';
 import { PHPUnitTestRunnerService } from './services/php-unit-test-runner-service';
 import { PHPDocumentEditorService } from './services/php-document-editor-service';
-import { PHPUnitTestProjectService, PHPUnitTestProjectInfo } from './services/php-unit-test-project-service';
+import { PHPUnitTestProjectService } from './services/php-unit-test-project-service';
 import { PHPUnitTestBuilderService } from './services/php-unit-test-builder-service';
 import { VisualCodeDocumentShim } from './models/vs-code-document-shim';
 import { ComposerSetupService } from './services/composer-setup-service'; 
 import { IVisualCodeDocumentShim } from './models/interfaces/vs-code-document-shim';
+import { TestUnitQueueItem } from './models/test-unit-queue-item';
+import { PHPUnitTestProjectInfo } from './models/php-unit-test-project-info';
 
 export class Workflow {
     private _ui: IVisualCodeShim;
@@ -151,12 +153,8 @@ export class Workflow {
 
     protected async doEditUnitTest(functionInfo: PHPTestFunctionInfo, document: IVisualCodeDocumentShim) {
         let testFunctionName: string;
-    
-        const projectInfo = this._project.getInfoForDocument(document);
-        if(! projectInfo.unitTestPathExists) {
-            await this.createUnitTestDirectory();
-        }
-    
+        let useBaseTestCase: boolean;
+
         if(functionInfo.hasTestFunction) {
             testFunctionName = functionInfo.functionName;
         } else {
@@ -170,7 +168,16 @@ export class Workflow {
             testFunctionName = inputResult;
             this._editor.addTestFunction(testFunctionName, functionInfo.entity, document);
         }   
-        await this._builder.editUnitTestFunction(testFunctionName, functionInfo.entity, 
+
+        const projectInfo = this._project.getInfoForDocument(document);
+        if(projectInfo.unitTestPathExists) {
+            useBaseTestCase = projectInfo.phpTDDBootstrapExists;
+        } else {
+            await this.createUnitTestDirectory();
+            useBaseTestCase = true;
+        }
+
+        await this._builder.editUnitTestFunction(testFunctionName, useBaseTestCase, functionInfo.entity, 
             document.getFullPath(), projectInfo.workspacePath);
     }
 
@@ -209,7 +216,7 @@ export class Workflow {
                 document.getLineTextAt(functionInfo.entity.endLineNumber - 1).length,
                 "Unit test failed"
             );
-            throw e;
+            // throw e;
         }
     }
 
@@ -258,15 +265,4 @@ export class Workflow {
             this._ui.showOutputChannel();
         }
     }    
-}
-
-class TestUnitQueueItem {
-    constructor(document: IVisualCodeDocumentShim, functionInfo: PHPTestFunctionInfo, projectInfo: PHPUnitTestProjectInfo) {
-        this.document = document;
-        this.functionInfo = functionInfo;
-        this.projectInfo = projectInfo;
-    }
-    readonly document: IVisualCodeDocumentShim;
-    readonly functionInfo: PHPTestFunctionInfo;
-    readonly projectInfo: PHPUnitTestProjectInfo;
 }

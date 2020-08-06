@@ -15,5 +15,6 @@
 - Align version number with previous release
 ## 0.0.6
 - Do not remove existing test directory and existing files in test directory when setting up first unit test
+- Use PHPUnit's TestCase if test directory already exists and has its own phpunit.xml
 - Update unit test and phpunit.xml templates to be phpunit 9 friendly
 - Replace "vscode" with "vscode-test"

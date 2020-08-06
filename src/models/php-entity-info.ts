@@ -6,22 +6,11 @@ import { PHPCommentInfo } from './php-comment-info';
  * Abstract class to store information about a parsed PHP entity
  */
 export abstract class PHPEntityInfo {
-    readonly name: string;
-    readonly namespace: string | undefined = undefined;
-    readonly testable: boolean = false;
-    readonly startLineNumber: number;
-    endLineNumber: number = NaN;
-    depth: number = NaN;
-    comment?: PHPCommentInfo = undefined;
+    public depth: number = NaN;
+    public comment?: PHPCommentInfo = undefined;
 
-    constructor(name: string, namespace: string | undefined, testable: boolean, 
-        startLineNumber: number, endLineNumber: number) {
-        this.name = name;
-        this.namespace = namespace;
-        this.testable = testable;
-        this.startLineNumber = startLineNumber;
-        this.endLineNumber = endLineNumber;
-    }
+    constructor(public readonly name: string, public readonly namespace: string | undefined, public readonly testable: boolean, 
+        public readonly startLineNumber: number, public endLineNumber: number) {}
 
     public abstract get identifier(): string;
      

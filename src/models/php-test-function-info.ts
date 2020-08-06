@@ -8,17 +8,9 @@ import { PHPEntityInfo } from './php-entity-info';
  */
 export class PHPTestFunctionInfo {
 
-    public readonly entity: PHPEntityInfo;
-    public readonly functionName: string;
-    public readonly disableAutoRun: boolean;
+    public readonly hasTestFunction: boolean;
 
-    constructor(entity: PHPEntityInfo, disableAutoRun: boolean, functionName: string = '\0') {
-        this.entity = entity;
-        this.disableAutoRun = disableAutoRun;
-        this.functionName = functionName;
-    }
-
-    get hasTestFunction(): boolean {
-        return (this.functionName !== '\0') && (this.functionName.length > 0);
+    constructor(public readonly entity: PHPEntityInfo, public readonly disableAutoRun: boolean, public readonly functionName: string = '\0') {
+        this.hasTestFunction = (functionName !== '\0') && (functionName.length > 0);
     }
 }

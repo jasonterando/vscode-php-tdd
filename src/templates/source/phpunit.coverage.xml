@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<phpunit bootstrap="./bootstrap.php" colors="true">
+<phpunit bootstrap="./phptdd-bootstrap.php" colors="true">
     <testsuites>
         <testsuite name="Unit Test Project">
             <directory>.</directory>
