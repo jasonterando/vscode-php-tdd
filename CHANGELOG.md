@@ -18,3 +18,6 @@
 - Use PHPUnit's TestCase if test directory already exists and has its own phpunit.xml
 - Update unit test and phpunit.xml templates to be phpunit 9 friendly
 - Replace "vscode" with "vscode-test"
+
+## 0.0.7
+- Fix to facilitate file names with spaces (thanks "spawnnnnn")
