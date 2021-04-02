@@ -94,7 +94,7 @@ suite("SpawnService", () => {
     
                 // Stub our expectations with any text we are inputing,
                 // you can remove these two lines if not piping in data
-                sandbox.stub(proc.stdin, "write").calledOnceWith(STDIN_TEXT);
+                sandbox.stub(proc.stdin, "write").calledOnceWith(STDIN_TEXT, "utf8");
                 sandbox.stub(proc.stdin, "end").calledOnce = true;
     
                 // Launch your process here

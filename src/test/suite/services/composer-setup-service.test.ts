@@ -241,7 +241,7 @@ suite('ComposerSetupService', () => {
                         const args = spawn.arguments;
                         sinon.assert.match(cmd, 'composer');
                         sinon.assert.match(args, ['dump-autoload']);
-                        r();
+                        r("");
                     });
                 };
                 return spawn;
@@ -279,7 +279,7 @@ suite('ComposerSetupService', () => {
                         const args = spawn.arguments;
                         sinon.assert.match(cmd, 'composer');
                         sinon.assert.match(args, ['dump-autoload']);
-                        r();
+                        r("");
                     });
                 };
                 return spawn;
@@ -317,7 +317,7 @@ suite('ComposerSetupService', () => {
                         const args = spawn.arguments;
                         sinon.assert.match(cmd, 'composer');
                         sinon.assert.match(args, ['dump-autoload']);
-                        r();
+                        r("");
                     });
                 };
                 return spawn;
@@ -350,12 +350,12 @@ suite('ComposerSetupService', () => {
             const spawnFactory = (ui: IVisualCodeShim, mirrorOutput?: boolean) => {
                 const spawn = new SpawnService(ui, mirrorOutput);
                 spawn.run = () => {
-                    return new Promise((r) => {
+                    return new Promise<string>((r) => {
                         const cmd = spawn.command;
                         const args = spawn.arguments;
                         sinon.assert.match(cmd, 'composer');
                         sinon.assert.match(args, ['dump-autoload']);
-                        r();
+                        r("");
                     });
                 };
                 return spawn;
@@ -393,7 +393,7 @@ suite('ComposerSetupService', () => {
                         const args = spawn.arguments;
                         sinon.assert.match(cmd, 'composer');
                         sinon.assert.match(args, ['dump-autoload']);
-                        r();
+                        r("");
                     });
                 };
                 return spawn;

@@ -123,7 +123,7 @@ export class PHPUnitTestBuilderService {
             }
 
             // Copy the template as the new unit test file
-            await new Promise(function(resolve, reject) {
+            await new Promise<void>(function(resolve, reject) {
                 fs.createReadStream(templateFile).pipe(fs.createWriteStream(testFileName))
                     .on('finish', () => { resolve(); })
                     .on('error', (err: any) => { reject(err); });

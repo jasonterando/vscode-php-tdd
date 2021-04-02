@@ -102,7 +102,7 @@ export class PHPUnitTestProjectService {
                         var source = path.join(sourceFolder, file);
                         if(fs.statSync(source).isFile()) {
                             var dest = path.join(unitTestDirectoryPath, file);
-                            copyPromises.push(new Promise(function(resolve, reject) {
+                            copyPromises.push(new Promise<void>(function(resolve, reject) {
                                 if (! fs.existsSync(dest)) {
                                     fs.createReadStream(source).pipe(fs.createWriteStream(dest))
                                         .on('finish', () => { resolve(); })
