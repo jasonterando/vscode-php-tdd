@@ -21,3 +21,6 @@
 
 ## 0.0.7
 - Fix to facilitate file names with spaces (thanks "spawnnnnn")
+
+## 0.0.8
+- Update dependencies to address vulnerabilities in older packages
