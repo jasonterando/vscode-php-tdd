@@ -70,7 +70,7 @@ export class PHPFileParserService {
             const args = ['-n'];
             if(forceJSON) {
                 const ext = this._ui.onWindows ? "dll" : "so";
-                args.push('-d', `extension=json.${ext}`);
+                //args.push('-d', `extension=json.${ext}`);
                 args.push('-d', `extension=tokenizer.${ext}`);
             }
             args.push(`"${path.join(path.dirname(__dirname), 'dump.php')}"`);
