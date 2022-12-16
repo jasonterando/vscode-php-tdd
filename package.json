@@ -184,7 +184,7 @@
         "@types/minimatch": "^5.1.2",
         "@types/node": "^14.14.37",
         "@types/sinon": "^9.0.11",
-        "@types/vscode": "^1.74.0",
+        "@types/vscode": "^1.23.0",
         "glob": "^7.1.6",
         "mocha": "^10.2.0",
         "nyc": "^15.1.0",
