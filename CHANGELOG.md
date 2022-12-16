@@ -24,3 +24,7 @@
 
 ## 0.0.8
 - Update dependencies to address vulnerabilities in older packages
+
+## 0.0.9
+- Update dependencies to address vulnerabilities in older package
+- Remove json.so parameter from php execution

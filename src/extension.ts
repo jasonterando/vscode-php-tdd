@@ -30,7 +30,7 @@ export function activate(context: vscode.ExtensionContext) {
     const cmdInitializeUnitTest = vscode.commands.registerCommand('phptdd.initializeUnitTestProject', async () => {
         try {
             await workflow.createUnitTestDirectory();
-        } catch(e) {
+        } catch(e: any) {
             vscode.window.showWarningMessage(e.toString());
         }
     });
@@ -42,7 +42,7 @@ export function activate(context: vscode.ExtensionContext) {
             if(editor) {
                 await workflow.editUnitTest(new VisualCodeDocumentShim(editor.document, editor));
             }
-        } catch(e) {
+        } catch(e: any) {
             vscode.window.showWarningMessage(e.toString());
         }
     });
@@ -54,7 +54,7 @@ export function activate(context: vscode.ExtensionContext) {
             if(editor) {
                 await workflow.editLastUnitTest(new VisualCodeDocumentShim(editor.document, editor));
             }
-        } catch(e) {
+        } catch(e: any) {
             vscode.window.showWarningMessage(e.toString());
         }
     });
@@ -66,7 +66,7 @@ export function activate(context: vscode.ExtensionContext) {
             if(editor) {
                 await workflow.runUnitTest(new VisualCodeDocumentShim(editor.document, editor));
             }
-        } catch(e) {
+        } catch(e: any) {
             vscode.window.showWarningMessage(e.toString());
         }
     });
@@ -76,7 +76,7 @@ export function activate(context: vscode.ExtensionContext) {
         try {
             const workflow = WorkflowFactory(ui);
             await workflow.runAllUnitTests(false);
-        } catch(e) {
+        } catch(e: any) {
             vscode.window.showWarningMessage(e.toString());
         }
     });
@@ -85,7 +85,7 @@ export function activate(context: vscode.ExtensionContext) {
     const cmdRunAllWithCoverageUnitTests = vscode.commands.registerCommand('phptdd.runAllWithCoverageUnitTests', async () => {
         try {
             await workflow.runAllUnitTests(true);
-        } catch(e) {
+        } catch(e: any) {
             vscode.window.showWarningMessage(e.toString());
         }
     });
@@ -95,7 +95,7 @@ export function activate(context: vscode.ExtensionContext) {
     const cmdClearDiagnostics = vscode.commands.registerCommand('phptdd.clearProblems', async () => {
         try {
             ui.clearAllDiagnostics();
-        } catch(e) {
+        } catch(e: any) {
             vscode.window.showWarningMessage(e.toString());
         }
     });

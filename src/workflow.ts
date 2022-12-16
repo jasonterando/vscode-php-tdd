@@ -143,7 +143,7 @@ export class Workflow {
                 workspaceInfo.workspacePath);   
             msg = "Workspace is ready for unit testing";
             this._ui.showInformationMessage(msg);
-        } catch(e) {
+        } catch(e: any) {
             msg = "Problems were encountered preparing the workspace for unit testing";
             this._ui.appendToOutputChannel(e.toString());
             this._ui.showWarningMessage(msg);

@@ -43,7 +43,7 @@ export namespace PHPUtility {
                 if(! fs.existsSync(curDir)) {
                     fs.mkdirSync(curDir);
                 }
-            } catch (err) {
+            } catch (err: any) {
                 if (err.code !== 'EEXIST') {
                     throw new Error("Unable to create ${curDir}: ${err}");
                 }

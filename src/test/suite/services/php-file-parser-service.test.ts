@@ -119,7 +119,7 @@ suite("PHPFileParser", () => {
             try {
                 await parser.tokenize(phpCode);
                 assert.fail('Call to PHP should have failed');
-            } catch(e) {
+            } catch(e: any) {
                 assert.equal(e.message, 'Nee!');
             }
         });
@@ -302,7 +302,7 @@ suite("PHPFileParser", () => {
             try {
                 await parser.getEntityAtLineNumber(phpCode, 14);
                 assert.fail("Should have failed with No PHP tokens found to parse");
-            } catch(e) {
+            } catch(e: any) {
                 assert.equal(e.message, "No PHP tokens found to parse");
             }
         });

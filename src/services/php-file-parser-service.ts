@@ -80,7 +80,7 @@ export class PHPFileParserService {
                 .setWriteToStdin(phpCode)
                 .run();
             return JSON.parse(results);
-        } catch(e) {
+        } catch(e: any) {
             if((e.message.indexOf('undefined function json_encode') !== -1) && (! forceJSON)) {
                 await this._ui.setEnablePHPExtensions(true);
                 return await this.tokenize(phpCode);
